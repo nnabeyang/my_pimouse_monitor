@@ -9,6 +9,16 @@ var ls = new ROSLIB.Topic({
   name: '/lightsensors',
   messageType: 'pimouse_ros/LightSensorValues'
 });
+ls.subscribe(function(message) {
+  if(message.sum_all > 500) {
+    m.vel_fw = 0;
+    m.vel_rot = 0;
+  } else {
+    m.vel_fw = parseInt($('#vel_fw').val());
+    m.vel_rot = parseInt($('#vel_rot').val());
+  }
+});
+
 var on = new ROSLIB.Service({
   ros: ros,
   name: '/motor_on',
@@ -41,10 +51,21 @@ var vel = new ROSLIB.Topic({
   name: '/cmd_vel',
   messageType: 'geometry_msgs/Twist'
 });
+class Motor {
+  constructor() {
+    this.vel_fw = 0;
+    this.vel_rot = 0;
+  }
+}
+var m = new Motor();
+m.vel_fw = parseInt($('#vel_fw').val());
+m.vel_rot = parseInt($('#vel_rot').val());
+
 
 function pubMotorValues() {
-  var fw = parseInt($('#vel_fw').val()) * 0.001;
-  var rot = Math.PI * parseInt($('#vel_rot').val())/ 180;
+  var fw = m.vel_fw * 0.001;
+  var rot = Math.PI * m.vel_rot / 180;
+  console.log(fw + ' ' + rot);
   var v = new ROSLIB.Message({
     linear: {x: fw, y:0, z:0},
     angular: {x: 0, y: 0, z: rot}
@@ -53,6 +74,8 @@ function pubMotorValues() {
 }
 var pid = null;
 $('#touchmotion').on('click', function() {
+  m.vel_fw = parseInt($('#vel_fw').val());
+  m.vel_rot = parseInt($('#vel_rot').val());
  if(!pid) {
    pid = setInterval(pubMotorValues, 100);          
   console.log(`move on ${pid}`);
