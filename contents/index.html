@@ -1,18 +1,27 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
+<head>
   <meta http-equiv=”Pragma” content=”no-cache”>
-  </head>
-  </body>
-  <button id="motor_on">on</button>
-  <button id="motor_off">off</button><br/>
-  <input type="text" id="vel_fw" placeholder="fw" value="0"/>
-  <input type="text" id="vel_rot"placeholder="rot"value="0" /><br/>
-  <button id="touchmotion">touch</button>
-
+</head>
+<body>
+  <button onclick="move('turnLeft')">LEFT</button>
+  <button onclick="move('turnRight')">RIGHT</button>
+  <button onclick="move('forward')">FORWARD</button>
+  <button onclick="move('back')">BACK</button>
+  <button onclick="stop()">STOP</button>
+  <button onclick="switchOn()">ON</button>
+  <button onclick="switchOff()">OFF</button><br/>
+  <canvas id="stage" width="500" height="500"></canvas>
   <script src="http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
   <script src="http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="car.js"></script>
   <script src="main.js"></script>
-  <body>
+<style>
+ #stage {
+   border: solid 1px
+ }
+</style>
+</body>
 </html>
+
+
