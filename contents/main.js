@@ -33,8 +33,15 @@ var off = new ROSLIB.Service({
   messageType: 'std_srvs/Trigger'
 });
 
+var turnRight = new ROSLIB.Service({
+  ros: ros,
+  name: '/timed_motion',
+  messageType: 'pimouse_ros/TimedMotion'
+});
+
+
 function switchOn() {
-on.callService(ROSLIB.ServiceRequest(), function(result) {
+on.callService(new ROSLIB.ServiceRequest(), function(result) {
   if(result.success) {
     console.log("switch on");
   }
@@ -42,13 +49,29 @@ on.callService(ROSLIB.ServiceRequest(), function(result) {
 console.log("on");
 }
 function switchOff() {
-off.callService(ROSLIB.ServiceRequest(), function(result) {
+off.callService(new ROSLIB.ServiceRequest(), function(result) {
   if(result.success) {
     console.log("switch off");
   }
 });
 console.log("off");
 }
+
+function turn() {
+  console.time('turn');
+ turnRight.callService(new ROSLIB.ServiceRequest({
+left_hz: 400,
+right_hz: -400,
+duration_ms: 1000
+ }), function(result) {
+    console.timeEnd('turn');
+  if(result.success) {
+    console.log("turn right");
+  }
+});
+console.log("turn");
+}
+
 
 
 car.show(context);
