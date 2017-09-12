@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta http-equiv=”Pragma” content=”no-cache”>
+</head>
+<body>
+  <button onclick="move('turnLeft')">LEFT</button>
+  <button onclick="move('turnRight')">RIGHT</button>
+  <button onclick="move('forward')">FORWARD</button>
+  <button onclick="move('back')">BACK</button>
+  <button onclick="stop()">STOP</button>
+  <button onclick="turn()">TURN</button>
+  <button onclick="switchOn()">ON</button>
+  <button onclick="switchOff()">OFF</button><br/>
+  <canvas id="stage" width="500" height="500"></canvas>
+  <script src="ros_mock.js"></script>
+  <script src="car.js"></script>
+  <script src="main.js?ver=2"></script>
+<style>
+ #stage {
+   border: solid 1px
+ }
+</style>
+</body>
+</html>
+
+
