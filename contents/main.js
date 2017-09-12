@@ -59,6 +59,19 @@ console.log("off");
 
 function turn() {
   console.time('turn');
+  var t = 0;
+  pid = setInterval(function() {
+    context.clearRect(0, 0, width, height);
+    car.turnRight();
+    car.show(context);
+    t += 100;
+    if(t == 1000) { 
+      clearInterval(pid);
+      pid = null;
+    }
+ 
+  }, 100);
+
  turnRight.callService(new ROSLIB.ServiceRequest({
 left_hz: 400,
 right_hz: -400,

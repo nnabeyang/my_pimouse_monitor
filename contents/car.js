@@ -14,22 +14,27 @@ class Car {
   move(step = 1) {
     this.p.x += this.s.linear * Math.cos((this.p.angle * Math.PI) / 180) * step;
     this.p.y += this.s.linear * Math.sin((this.p.angle * Math.PI) / 180) * step;
+    if(this.p.x > 500) this.p.x -= 500;
+    if(this.p.x < 0) this.p.x += 500;
+    if(this.p.y > 500) this.p.y -= 500;
+    if(this.p.y < 0) this.p.y += 500;
     this.p.angle = ((360 + this.s.angular) * step + this.p.angle) % 360;
+    console.log(this.p.angle);
   }
   forward(step = 1) {
-    this.s.linear = 1;
+    this.s.linear = 10;
     this.s.angular = 0;
-    this.check();
+    //this.check();
     this.move(step);
   }
   back(step = 1) {
-    this.s.linear = -1;
+    this.s.linear = -10;
     this.s.angular = 0;
     this.move(step);
   }
   turnRight(step = 1) {
     this.s.linear = 0;
-    this.s.angular = 10;
+    this.s.angular = 18;
     this.move(step);
   }
   turnLeft(step = 1) {
