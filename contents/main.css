@@ -1,0 +1,52 @@
+body {
+  margin: 0;
+}
+/*
+#stage {
+  display: block;
+  width: 100vh;
+  height: 100vh;
+  border: solid 1px;
+  margin: 0 auto;
+}
+*/
+#content {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  flex-flow: row;
+  justify-content: space-between;
+}
+#four-way {
+  display: grid;
+  width: 100vh;
+  height: 100vh;
+  background: gray;
+  grid-gap: 10px;
+  grid-template-columns: 1.5fr 1.0fr 1.5fr;
+  grid-template-rows: 1.5fr 1.0fr 1.5fr
+}
+#four-way .item {
+  display: block;
+  background-color: green;
+}
+#four-way button {
+  background-color: white;
+}
+
+#ab-button {
+  display: grid;
+  width: 100vh;
+  height: 100vh;
+  background: gray;
+  grid-gap: 10px;
+  grid-template-columns: 1.5fr 1.0fr 1.5fr;
+  grid-template-rows: 1.5fr 1.0fr 1.5fr
+}
+#ab-button .item {
+  display: block;
+  background-color: green;
+}
+#ab-button button {
+  background-color: white;
+}

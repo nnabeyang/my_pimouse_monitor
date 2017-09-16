@@ -3,24 +3,10 @@ var ros = new ROSLIB.Ros({url: 'ws://' + location.hostname + ':9000'});
 ros.on('connection', function() { console.log('websocket: connected')});
 ros.on('error', function(error) { console.log('websocket: error: ', error)});
 ros.on('close', function() { console.log('websocket: closed')});
-var canvas = document.getElementById('stage');
-var context = canvas.getContext('2d');
-var width = canvas.width;
-var height = canvas.height;
+
 var pid = null;
-var car = new Car(20, 30, {
-  linear: 10,
-  angular: 10
-}, {
-  x: 100,
-  y: 100,
-  angle: 30
-});
-var vel = new ROSLIB.Topic({
-  ros: ros,
-  name: '/cmd_vel',
-  messageType: 'geometry_msgs/Twist'
-});
+
+
 var on =  new ROSLIB.Service({
   ros: ros,
   name: '/motor_on',
@@ -39,14 +25,12 @@ var turnRight = new ROSLIB.Service({
   messageType: 'pimouse_ros/TimedMotion'
 });
 
-
 function switchOn() {
 on.callService(new ROSLIB.ServiceRequest(), function(result) {
   if(result.success) {
     console.log("switch on");
   }
 });
-console.log("on");
 }
 function switchOff() {
 off.callService(new ROSLIB.ServiceRequest(), function(result) {
@@ -54,40 +38,60 @@ off.callService(new ROSLIB.ServiceRequest(), function(result) {
     console.log("switch off");
   }
 });
-console.log("off");
 }
 
 function turn() {
-  console.time('turn');
-  var t = 0;
-  pid = setInterval(function() {
-    context.clearRect(0, 0, width, height);
-    car.turnRight();
-    car.show(context);
-    t += 100;
-    if(t == 1000) { 
-      clearInterval(pid);
-      pid = null;
-    }
- 
-  }, 100);
-
- turnRight.callService(new ROSLIB.ServiceRequest({
-left_hz: 400,
-right_hz: -400,
-duration_ms: 1000
+  turnRight.callService(new ROSLIB.ServiceRequest({
+  left_hz: 400,
+  right_hz: -400,
+  duration_ms: 1000
  }), function(result) {
-    console.timeEnd('turn');
   if(result.success) {
     console.log("turn right");
   }
 });
-console.log("turn");
 }
 
+function move_right() {
+  turnRight.callService(new ROSLIB.ServiceRequest({
+  left_hz: 400,
+  right_hz: -400,
+  duration_ms: 500
+ }), function(result) {
+  if(result.success) {
+    console.log("turn right");
+  }
+});
+}
 
-
-car.show(context);
+function move_left() {
+  turnRight.callService(new ROSLIB.ServiceRequest({
+  left_hz: -400,
+  right_hz: 400,
+  duration_ms: 500
+ }), function(result) {
+  if(result.success) {
+    console.log("turn left");
+  }
+});
+}
+var vel = new ROSLIB.Topic({
+  ros: ros,
+  name: '/cmd_vel',
+  messageType: 'geometry_msgs/Twist'
+});
+function forward() {
+  var methodName = 'forward';
+  if(stop() && action === methodName) return;
+  action = methodName;
+  pid = setInterval(function() {
+    //update(car, context, canvas, methodName);
+    vel.publish(new ROSLIB.Message({
+      linear: {x: 10, y: 0, z: 0},
+      angular: {x: 0, y: 0, z: 0}
+    }));
+  }, 100);
+}
 var action = null;
 function stop() {
   if (pid) {
@@ -97,14 +101,16 @@ function stop() {
   }
   return false;
 }
+function update(car, context, canvas, methodName) {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  car[methodName]();
+  car.show(context);
+}
 function move(methodName) {
   if(stop() && action === methodName) return;
   action = methodName;
   pid = setInterval(function() {
-    context.clearRect(0, 0, width, height);
-    car[methodName]();
-    car.show(context);
+    update(car, context, canvas, methodName);
     vel.publish(new ROSLIB.Message(car.pubValues()));
   }, 100);
 }
-

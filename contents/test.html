@@ -4,18 +4,19 @@
   <meta http-equiv=”Pragma” content=”no-cache”>
 </head>
 <body>
-  <button onclick="move('turnLeft')">LEFT</button>
-  <button onclick="move('turnRight')">RIGHT</button>
-  <button onclick="move('forward')">FORWARD</button>
-  <button onclick="move('back')">BACK</button>
+  <button onclick="move_left()">LEFT</button>
+  <button onclick="move_right()">RIGHT</button>
+  <button onclick="forward()">FORWARD</button>
   <button onclick="stop()">STOP</button>
   <button onclick="turn()">TURN</button>
   <button onclick="switchOn()">ON</button>
   <button onclick="switchOff()">OFF</button><br/>
   <canvas id="stage" width="500" height="500"></canvas>
-  <script src="ros_mock.js"></script>
-  <script src="car.js"></script>
-  <script src="main.js?ver=2"></script>
+  <script src="service.js?ver=1"></script>
+  <script src="topic.js"></script>
+  <script src="ros_mock.js?ver=1"></script>
+  <script src="car.js?ver=1"></script>
+  <script src="main.js?ver=6"></script>
 <style>
  #stage {
    border: solid 1px
@@ -23,5 +24,3 @@
 </style>
 </body>
 </html>
-
-
