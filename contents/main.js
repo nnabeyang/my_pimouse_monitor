@@ -35,16 +35,23 @@ on.callService(new ROSLIB.ServiceRequest(), function(result) {
 function switchOff() {
 off.callService(new ROSLIB.ServiceRequest(), function(result) {
   if(result.success) {
+    if(pid) clearInterval(pid);
+    pid = null;
+    vel.publish(new ROSLIB.Message({
+      linear: {x:  0, y: 0, z: 0},
+      angular: {x: 0, y: 0, z: 0}
+    }));
     console.log("switch off");
   }
 });
 }
-
+var HALF_TIME = 490;
 function turn() {
+  action = "turn";
   turnRight.callService(new ROSLIB.ServiceRequest({
   left_hz: 400,
   right_hz: -400,
-  duration_ms: 1000
+  duration_ms: 975 
  }), function(result) {
   if(result.success) {
     console.log("turn right");
@@ -53,10 +60,11 @@ function turn() {
 }
 
 function move_right() {
+  action = "right";
   turnRight.callService(new ROSLIB.ServiceRequest({
   left_hz: 400,
   right_hz: -400,
-  duration_ms: 500
+  duration_ms: HALF_TIME 
  }), function(result) {
   if(result.success) {
     console.log("turn right");
@@ -65,10 +73,11 @@ function move_right() {
 }
 
 function move_left() {
+  action = "left";
   turnRight.callService(new ROSLIB.ServiceRequest({
   left_hz: -400,
   right_hz: 400,
-  duration_ms: 500
+  duration_ms: HALF_TIME 
  }), function(result) {
   if(result.success) {
     console.log("turn left");
@@ -80,14 +89,32 @@ var vel = new ROSLIB.Topic({
   name: '/cmd_vel',
   messageType: 'geometry_msgs/Twist'
 });
+var ls = new ROSLIB.Topic({
+  ros: ros,
+  name: '/lightsensors',
+  messageType: 'pimouse_ros/LightSensorValues'
+});
+
+ls.subscribe(function(message) {
+  if(action == 'forward' && message.sum_all > 500) {
+    console.log("stop");
+    if(pid) clearInterval(pid);
+    pid = null;
+    vel.publish(new ROSLIB.Message({
+      linear: {x:  0, y: 0, z: 0},
+      angular: {x: 0, y: 0, z: 0}
+    }));
+    console.log("stop");
+  }
+});
 function forward() {
   var methodName = 'forward';
   if(stop() && action === methodName) return;
   action = methodName;
+  console.log("forward");
   pid = setInterval(function() {
-    //update(car, context, canvas, methodName);
     vel.publish(new ROSLIB.Message({
-      linear: {x: 10, y: 0, z: 0},
+      linear: {x: 0.2, y: 0, z: 0},
       angular: {x: 0, y: 0, z: 0}
     }));
   }, 100);
